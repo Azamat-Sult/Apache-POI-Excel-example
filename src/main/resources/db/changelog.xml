@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet id="1" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from pg_type where typname = 'type_1_type';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            create type type_1_type as enum ('TYPE_1_1', 'TYPE_1_2', 'TYPE_1_3');
+        </sql>
+    </changeSet>
+
+    <changeSet id="2" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="some_entities"/>
+            </not>
+        </preConditions>
+        <createTable tableName="some_entities">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="string" type="VARCHAR(32)"/>
+            <column name="type_1" type="type_1_type"/>
+            <column name="big_decimal" type="NUMERIC"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
