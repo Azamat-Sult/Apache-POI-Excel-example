@@ -30,9 +30,12 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             <column name="id" type="BIGSERIAL">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="string" type="VARCHAR(32)"/>
+            <column name="string_1" type="VARCHAR(32)"/>
+            <column name="string_2" type="VARCHAR(32)"/>
+            <column name="string_3" type="VARCHAR(32)"/>
             <column name="type_1" type="type_1_type"/>
-            <column name="big_decimal" type="NUMERIC"/>
+            <column name="big_decimal_1" type="NUMERIC"/>
+            <column name="big_decimal_2" type="NUMERIC"/>
         </createTable>
     </changeSet>
 

@@ -19,22 +19,37 @@ public class SomeDataLoadDto {
     private Long id;
 
     @ValidString
-    @ReportHeader("Строка")
-    private String string;
+    @ReportHeader("Строка 1")
+    private String string1;
+
+    @ValidString
+    @ReportHeader("Строка 2")
+    private String string2;
+
+    @ValidString
+    @ReportHeader("Строка 3")
+    private String string3;
 
     @ReportHeader("Тип 1")
     private Type1 type1;
 
     @ValidNumber
-    @ReportHeader("BigDecimal")
-    private BigDecimal bigDecimal;
+    @ReportHeader("BigDecimal 1")
+    private BigDecimal bigDecimal1;
+
+    @ValidNumber
+    @ReportHeader("BigDecimal 2")
+    private BigDecimal bigDecimal2;
 
     public SomeEntity toEntity() {
         return SomeEntity.builder()
                 .id(this.id)
-                .string(this.string)
+                .string1(this.string1)
+                .string2(this.string2)
+                .string3(this.string3)
                 .type1(this.type1)
-                .bigDecimal(this.bigDecimal)
+                .bigDecimal1(this.bigDecimal1)
+                .bigDecimal2(this.bigDecimal2)
                 .build();
     }
 
