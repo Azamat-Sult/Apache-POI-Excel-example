@@ -17,3 +17,5 @@ request body:
 "bigDecimal2"
 ]
 }
+
+Swagger UI: http://localhost:8080/swagger-ui/
