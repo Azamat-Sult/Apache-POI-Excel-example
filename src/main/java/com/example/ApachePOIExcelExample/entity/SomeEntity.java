@@ -17,33 +17,33 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@Table(name = "some_entities")
+@Table(name = "SOME_ENTITIES")
 @TypeDef(name = "type_1_type", typeClass = PostgreSQLEnumType.class)
 public class SomeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "string_1")
+    @Column(name = "STRING_1")
     private String string1;
 
-    @Column(name = "string_2")
+    @Column(name = "STRING_2")
     private String string2;
 
-    @Column(name = "string_3")
+    @Column(name = "STRING_3")
     private String string3;
 
-    @Column(name = "type_1")
+    @Column(name = "TYPE_1")
     @Type(type = "type_1_type")
     @Enumerated(EnumType.STRING)
     private Type1 type1;
 
-    @Column(name = "big_decimal_1")
+    @Column(name = "BIG_DECIMAL_1")
     private BigDecimal bigDecimal1;
 
-    @Column(name = "big_decimal_2")
+    @Column(name = "BIG_DECIMAL_2")
     private BigDecimal bigDecimal2;
 
     public SomeDataLoadDto toSomeDataLoadDto() {
