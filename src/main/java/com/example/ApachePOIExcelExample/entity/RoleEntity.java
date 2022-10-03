@@ -20,11 +20,11 @@ public class RoleEntity {
     @Column(name = "ROLE_ID", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "ROLE", nullable = false, length = 16)
+    @Column(name = "ROLE", unique = true, nullable = false, length = 32)
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @Column(name = "DESCRIPTION", nullable = false, length = 32)
+    @Column(name = "DESCRIPTION", nullable = false, length = 64)
     private String description;
 
     public RoleDto toDto() {

@@ -19,6 +19,7 @@ public class RoleService {
                 .map(role -> new RoleDto(role, role.getDescription()))
                 .map(RoleDto::toEntity)
                 .toList();
+        roleRepository.deleteAll();
         roleRepository.saveAll(roles);
     }
 

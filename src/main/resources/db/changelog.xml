@@ -47,11 +47,135 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         </preConditions>
         <createTable tableName="roles">
             <column name="role_id" type="BIGSERIAL">
-                <constraints primaryKey="true"/>
+                <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="role" type="VARCHAR(16)"/>
-            <column name="description" type="VARCHAR(32)"/>
+            <column name="role" type="VARCHAR(32)">
+                <constraints unique="true" nullable="false" />
+            </column>
+            <column name="description" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM roles
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="roles">
+            <column name="role" value="USER"/>
+            <column name="description" value="Пользователь"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="role" value="ADMIN"/>
+            <column name="description" value="Администратор"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="role" value="OWNER"/>
+            <column name="description" value="Владелец ресурса"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="5" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users">
+            <column name="user_id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(32)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(32)"/>
+            <column name="full_name" type="VARCHAR(64)"/>
+            <column name="not_expired" type="BOOLEAN" defaultValue="true"/>
+            <column name="not_locked" type="BOOLEAN" defaultValue="true"/>
+            <column name="credentials_not_expired" type="BOOLEAN" defaultValue="true"/>
+            <column name="last_login" type="TIMESTAMP"/>
+            <column name="registered" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM users
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="users">
+            <column name="email" value="user@gmail.com"/>
+            <column name="password" value="1234"/>
+            <column name="full_name" value="simple user"/>
+        </insert>
+        <insert tableName="users">
+            <column name="email" value="admin@gmail.com"/>
+            <column name="password" value="1234"/>
+            <column name="full_name" value="simple admin"/>
+        </insert>
+        <insert tableName="users">
+            <column name="email" value="owner@gmail.com"/>
+            <column name="password" value="1234"/>
+            <column name="full_name" value="simple owner"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="7" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users_roles"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users_roles">
+            <column name="user_id" type="BIGSERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGSERIAL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="users_roles" baseColumnNames="user_id"
+                                 constraintName="fk_users" referencedTableName="users"
+                                 referencedColumnNames="user_id" onDelete="CASCADE" onUpdate="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="users_roles" baseColumnNames="role_id"
+                                 constraintName="fk_roles" referencedTableName="roles"
+                                 referencedColumnNames="role_id" onDelete="CASCADE" onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="8" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM users_roles
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="users_roles">
+            <column name="user_id" value="1"/>
+            <column name="role_id" value="1"/>
+        </insert>
+        <insert tableName="users_roles">
+            <column name="user_id" value="2"/>
+            <column name="role_id" value="1"/>
+        </insert>
+        <insert tableName="users_roles">
+            <column name="user_id" value="2"/>
+            <column name="role_id" value="2"/>
+        </insert>
+        <insert tableName="users_roles">
+            <column name="user_id" value="3"/>
+            <column name="role_id" value="1"/>
+        </insert>
+        <insert tableName="users_roles">
+            <column name="user_id" value="3"/>
+            <column name="role_id" value="2"/>
+        </insert>
+        <insert tableName="users_roles">
+            <column name="user_id" value="3"/>
+            <column name="role_id" value="3"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>
