@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Select fields and get report</title>
+</head>
+<body>
+    <div align="center">
+        <h2>Select fields and get report</h2>
+    </div>
+    <div align="center">
+        <h4><a th:href="@{/welcome}">To welcome page</a></h4>
+    </div>
+    <form action="#" th:action="@{/report}"  th:object="${ReportRequest}" method="POST">
+        <strong>Select fields of report (Multiple):</strong>
+        <ul>
+            <li th:each="field : ${fields}">
+                <input type="checkbox" th:field="*{fields}" th:value="${field}"/>
+                <label th:for="${#ids.prev('fields')}" th:text="${field}"></label>
+            </li>
+        </ul>
+        <input type="submit" value="Get report"/>
+    </form>
+</body>
+</html>

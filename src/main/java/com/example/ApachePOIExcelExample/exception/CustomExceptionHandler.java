@@ -28,13 +28,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.joining());
     }
 
-    @ExceptionHandler(Exception.class)
-    public final ResponseEntity<Object> internalServerError(Exception e, WebRequest request) {
-        log.error(shortenedStackTrace(e));
-        var apiException = new ApiError("Internal server error: contact admin");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiException);
-    }
-
     @ExceptionHandler(ReportException.class)
     public final ResponseEntity<Object> reportError(Exception e, WebRequest request) {
         log.error(shortenedStackTrace(e));

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +15,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -42,11 +44,10 @@ public class SecurityConfig {
         //declares which Page(URL) will have What access type
         http.authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/welcome").authenticated()
+                .antMatchers("/welcome", "/common", "/get_report").authenticated()
                 .antMatchers("/user").hasAuthority("ROLE_USER")
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/owner").hasAuthority("ROLE_OWNER")
-                .antMatchers("/common").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_OWNER")
 
                 // Any other URLs which are not configured in above antMatchers
                 // generally declared aunthenticated() in real time
@@ -63,9 +64,11 @@ public class SecurityConfig {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 
                 // Exception Details
-                //.and()
-                //.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
-                //.accessDeniedPage("/403")
+//                .and()
+//                .exceptionHandling()
+//                .accessDeniedHandler()
+//                .authenticationEntryPoint()
+//                .accessDeniedPage("/error/403")
 
                 .and().cors().and().csrf().disable();
 
