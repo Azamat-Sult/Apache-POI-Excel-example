@@ -7,9 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UserRole {
 
-    USER("Пользователь"),
-    ADMIN("Администратор"),
-    OWNER("Владелец ресурса");
+    ROLE_USER("Пользователь"),
+    ROLE_ADMIN("Администратор"),
+    ROLE_OWNER("Владелец ресурса");
 
     private final String description;
 

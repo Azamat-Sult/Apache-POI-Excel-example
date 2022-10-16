@@ -65,15 +65,15 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             </sqlCheck>
         </preConditions>
         <insert tableName="roles">
-            <column name="role" value="USER"/>
+            <column name="role" value="ROLE_USER"/>
             <column name="description" value="Пользователь"/>
         </insert>
         <insert tableName="roles">
-            <column name="role" value="ADMIN"/>
+            <column name="role" value="ROLE_ADMIN"/>
             <column name="description" value="Администратор"/>
         </insert>
         <insert tableName="roles">
-            <column name="role" value="OWNER"/>
+            <column name="role" value="ROLE_OWNER"/>
             <column name="description" value="Владелец ресурса"/>
         </insert>
     </changeSet>
@@ -91,11 +91,16 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             <column name="email" type="VARCHAR(32)">
                 <constraints unique="true" nullable="false"/>
             </column>
-            <column name="password" type="VARCHAR(32)"/>
-            <column name="full_name" type="VARCHAR(64)"/>
+            <column name="password" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
             <column name="not_expired" type="BOOLEAN" defaultValue="true"/>
             <column name="not_locked" type="BOOLEAN" defaultValue="true"/>
             <column name="credentials_not_expired" type="BOOLEAN" defaultValue="true"/>
+            <column name="is_enabled" type="BOOLEAN" defaultValue="true"/>
             <column name="last_login" type="TIMESTAMP"/>
             <column name="registered" type="TIMESTAMP"/>
         </createTable>
@@ -109,17 +114,17 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         </preConditions>
         <insert tableName="users">
             <column name="email" value="user@gmail.com"/>
-            <column name="password" value="1234"/>
+            <column name="password" value="$2a$10$jrhROOH.bLD5PzjXtsXpweApoPVRLEfhFdcCdllVo5WSFGVr/4BsK"/>
             <column name="full_name" value="simple user"/>
         </insert>
         <insert tableName="users">
             <column name="email" value="admin@gmail.com"/>
-            <column name="password" value="1234"/>
+            <column name="password" value="$2a$10$jrhROOH.bLD5PzjXtsXpweApoPVRLEfhFdcCdllVo5WSFGVr/4BsK"/>
             <column name="full_name" value="simple admin"/>
         </insert>
         <insert tableName="users">
             <column name="email" value="owner@gmail.com"/>
-            <column name="password" value="1234"/>
+            <column name="password" value="$2a$10$jrhROOH.bLD5PzjXtsXpweApoPVRLEfhFdcCdllVo5WSFGVr/4BsK"/>
             <column name="full_name" value="simple owner"/>
         </insert>
     </changeSet>
