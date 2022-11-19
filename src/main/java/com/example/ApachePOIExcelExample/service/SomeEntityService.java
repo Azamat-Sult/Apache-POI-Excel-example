@@ -1,6 +1,7 @@
 package com.example.ApachePOIExcelExample.service;
 
 import com.example.ApachePOIExcelExample.entity.SomeEntity;
+import com.example.ApachePOIExcelExample.model.ReportSheetDto;
 import com.example.ApachePOIExcelExample.model.SomeDataLoadDto;
 import com.example.ApachePOIExcelExample.repository.SomeEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +32,14 @@ public class SomeEntityService {
                 .orElseThrow(() -> new NoSuchElementException("Элемент не найден"));
     }
 
-    public List<SomeEntity> findAll() {
-        return someEntityRepository.findAll();
+    public List<ReportSheetDto> findAll() {
+        return someEntityRepository.findAll().stream()
+                .map(SomeEntity::toReportSheetDto)
+                .toList();
+    }
+
+    public void deleteById(Long id) {
+        someEntityRepository.deleteById(id);
     }
 
 }

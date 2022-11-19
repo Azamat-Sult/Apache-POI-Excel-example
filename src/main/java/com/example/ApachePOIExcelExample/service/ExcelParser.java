@@ -149,7 +149,7 @@ public class ExcelParser<E> {
                 var label = value.toString();
                 value = getEnumByDescription(field, label);
             }
-        } else {
+        } else if (Objects.nonNull(value)) {
             validateValue(field, value);
         }
         return setFieldValue(row, field, value);

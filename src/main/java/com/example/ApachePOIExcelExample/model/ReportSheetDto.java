@@ -16,6 +16,10 @@ import java.math.BigDecimal;
 @ReportTemplate(name = "Содержимое БД")
 public class ReportSheetDto {
 
+    @ReportHeader("Id")
+    @ReportFieldControl(accessType = ReportFieldControl.AccessType.TECH)
+    private Long id;
+
     @ReportHeader("Строка 1")
     @ReportFieldControl(accessType = ReportFieldControl.AccessType.SHOW_ALWAYS)
     private String string1;

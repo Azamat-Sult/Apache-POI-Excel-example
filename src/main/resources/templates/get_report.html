@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="ISO-8859-1">
+    <meta charset="UTF-8">
     <title>Select fields and get report</title>
 </head>
 <body>
@@ -11,6 +12,7 @@
     <div align="center">
         <h4><a th:href="@{/welcome}">To welcome page</a></h4>
     </div>
+
     <form action="#" th:action="@{/report}"  th:object="${ReportRequest}" method="POST">
         <strong>Select fields of report (Multiple):</strong>
         <ul>
@@ -21,5 +23,43 @@
         </ul>
         <input type="submit" value="Get report"/>
     </form>
+
+    <div align="center" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_OWNER')">
+        <form method="post" th:action="@{/upload}" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" name="file" class="form-control-file">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload File</button>
+        </form>
+    </div>
+
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Строка 1</th>
+            <th>Строка 2</th>
+            <th>Строка 3</th>
+            <th>Тип 1</th>
+            <th>BigDecimal 1</th>
+            <th>BigDecimal 2</th>
+            <th sec:authorize="hasRole('ROLE_OWNER')">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="Row : ${ReportData}">
+            <td th:text="${Row.id}"></td>
+            <td th:text="${Row.string1}"></td>
+            <td th:text="${Row.string2}"></td>
+            <td th:text="${Row.string3}"></td>
+            <td th:text="${Row.type1}"></td>
+            <td th:text="${Row.bigDecimal1}"></td>
+            <td th:text="${Row.bigDecimal2}"></td>
+            <td sec:authorize="hasRole('ROLE_OWNER')">
+                <a th:href="@{delete/__${Row.id}__}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </body>
 </html>

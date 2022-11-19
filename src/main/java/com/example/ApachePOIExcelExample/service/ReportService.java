@@ -1,7 +1,6 @@
 package com.example.ApachePOIExcelExample.service;
 
 import com.example.ApachePOIExcelExample.annotation.ReportFieldControl.AccessType;
-import com.example.ApachePOIExcelExample.entity.SomeEntity;
 import com.example.ApachePOIExcelExample.model.ReportFieldsDto;
 import com.example.ApachePOIExcelExample.model.ReportSheetDto;
 import com.example.ApachePOIExcelExample.util.ExcelUtil;
@@ -11,7 +10,6 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -26,9 +24,7 @@ public class ReportService {
 
         compileReportColumns(fields);
 
-        var report = someEntityService.findAll().stream()
-                .map(SomeEntity::toReportSheetDto)
-                .toList();
+        var report = someEntityService.findAll();
 
         XSSFWorkbook workbook = new XSSFWorkbook();
 

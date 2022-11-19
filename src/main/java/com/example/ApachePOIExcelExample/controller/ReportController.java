@@ -4,6 +4,7 @@ import com.example.ApachePOIExcelExample.exception.ReportException;
 import com.example.ApachePOIExcelExample.model.ReportRequest;
 import com.example.ApachePOIExcelExample.model.ReportSheetDto;
 import com.example.ApachePOIExcelExample.service.ReportService;
+import com.example.ApachePOIExcelExample.service.SomeEntityService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,12 +21,13 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @Api(tags = "ReportController")
 public class ReportController {
 
     private final ReportService reportService;
+    private final SomeEntityService someEntityService;
 
     @GetMapping("/get_report")
     public ModelAndView getReportPage() {
@@ -32,8 +35,11 @@ public class ReportController {
         List<String> displayFields = Arrays.stream(ReportSheetDto.class.getDeclaredFields())
                 .map(Field::getName)
                 .toList();
+        List<ReportSheetDto> data = someEntityService.findAll();
         mav.addObject("fields", displayFields);
         mav.addObject("ReportRequest", new ReportRequest());
+        mav.addObject("ReportData", data);
+        mav.addObject("Row", new ReportSheetDto());
         return mav;
     }
 
@@ -48,6 +54,14 @@ public class ReportController {
         headers.set(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel; charset=utf-8");
         var resourceStream = reportService.buildReport(request.getFields());
         return new ResponseEntity<>(resourceStream, headers, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
+    @GetMapping("/delete/{id}")
+    @ApiOperation(value = "Delete row")
+    public String deleteRow(@PathVariable("id") Long id) {
+        someEntityService.deleteById(id);
+        return "redirect:/get_report";
     }
 
 }

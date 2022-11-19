@@ -60,6 +60,7 @@ public class SomeEntity {
 
     public ReportSheetDto toReportSheetDto() {
         return ReportSheetDto.builder()
+                .id(this.id)
                 .string1(this.string1)
                 .string2(this.string2)
                 .string3(this.string3)
