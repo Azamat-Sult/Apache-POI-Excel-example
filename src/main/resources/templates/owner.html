@@ -1,16 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-	<meta charset="UTF-8">
-	<title>Welcome to Spring Application Demo</title>
-</head>
+<head th:replace="fragments :: html_head(pageTitle='Welcome to owners page')"/>
 <body>
 	<div align="center">
 		<h2>Welcome to owners page</h2>
-		<p>Your user name is: <b>[[${#request.userPrincipal.principal.username}]]</b></p>
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Logout" />
-        </form>		
+		<div align="center" th:replace="fragments :: header"></div>
 	</div>
 	<div align="center">
 		<h4><a th:href="@{/welcome}">To welcome page</a></h4>

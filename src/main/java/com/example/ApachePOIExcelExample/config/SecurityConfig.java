@@ -1,22 +1,36 @@
 package com.example.ApachePOIExcelExample.config;
 
+import com.example.ApachePOIExcelExample.security.CustomOAuth2User;
+import com.example.ApachePOIExcelExample.security.CustomOAuth2UserService;
 import com.example.ApachePOIExcelExample.security.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+
+    @Autowired
+    private CustomOAuth2UserService oauthUserService;
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -29,13 +43,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder,
-                                             UserDetailsService userDetailService) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailService)
-                .passwordEncoder(bCryptPasswordEncoder)
-                .and()
-                .build();
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(bCryptPasswordEncoder());
+        return authProvider;
     }
 
     @Bean
@@ -43,8 +55,8 @@ public class SecurityConfig {
 
         //declares which Page(URL) will have What access type
         http.authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/welcome", "/common", "/get_report").authenticated()
+                .antMatchers("/", "/login", "/oauth/**").permitAll()
+//                .antMatchers("/welcome", "/common", "/get_report").authenticated()
                 .antMatchers("/user").hasAuthority("ROLE_USER")
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/owner").hasAuthority("ROLE_OWNER")
@@ -55,20 +67,33 @@ public class SecurityConfig {
 
                 // Login Form Details
                 .and()
-                .formLogin()
-                .defaultSuccessUrl("/welcome", true)
+                .formLogin().permitAll()
+                    .loginPage("/login")
+                    .usernameParameter("email")
+                    .passwordParameter("pass")
+                    .defaultSuccessUrl("/welcome", true)
+                .and()
+                    .oauth2Login()
+                    .loginPage("/login")
+                    .userInfoEndpoint()
+                    .userService(oauthUserService)
+                    .and()
+                    .successHandler(new AuthenticationSuccessHandler() {
+                        @Override
+                        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                                            Authentication authentication) throws IOException, ServletException {
+                            System.out.println("AuthenticationSuccessHandler invoked");
+                            System.out.println("Authentication name: " + authentication.getName());
+                            CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
+                            customUserDetailsService.processOAuthPostLogin(oauthUser);
+                            response.sendRedirect("/welcome");
+                        }
+                    })
+                    //.defaultSuccessUrl("/welcome")
 
                 // Logout Form Details
                 .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-
-                // Exception Details
-//                .and()
-//                .exceptionHandling()
-//                .accessDeniedHandler()
-//                .authenticationEntryPoint()
-//                .accessDeniedPage("/error/403")
+                .logout().logoutSuccessUrl("/").permitAll()
 
                 .and().cors().and().csrf().disable();
 

@@ -1,6 +1,10 @@
 package com.example.ApachePOIExcelExample.entity;
 
+import com.example.ApachePOIExcelExample.enums.PostgreSQLEnumType;
+import com.example.ApachePOIExcelExample.enums.Provider;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -13,6 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "USERS")
 @EqualsAndHashCode(of = "id")
+@TypeDef(name = "provider_type", typeClass = PostgreSQLEnumType.class)
 public class UserEntity {
 
     @Id
@@ -34,6 +39,11 @@ public class UserEntity {
 
     @Column(name = "NOT_LOCKED", nullable = false)
     private boolean notLocked;
+
+    @Column(name = "PROVIDER", nullable = false)
+    @Type(type = "provider_type")
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
 
     @Column(name = "CREDENTIALS_NOT_EXPIRED", nullable = false)
     private boolean credentialsNotExpired;
