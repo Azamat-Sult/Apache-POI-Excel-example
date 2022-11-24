@@ -231,4 +231,39 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         </insert>
     </changeSet>
 
+    <changeSet id="10" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from pg_type where typname = 'type_2_type';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            create type type_2_type as enum ('TYPE_2_1', 'TYPE_2_2', 'TYPE_2_3');
+        </sql>
+    </changeSet>
+
+    <changeSet id="11" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="S_ARRAY_COLUMN_EXAMPLE"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="S_ARRAY_COLUMN_EXAMPLE" startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <changeSet id="12" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="array_column_example"/>
+            </not>
+        </preConditions>
+        <createTable tableName="array_column_example">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="type_2" type="type_2_type []"/>
+            <column name="some_object" type="JSONB"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

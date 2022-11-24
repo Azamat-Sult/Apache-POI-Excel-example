@@ -3,6 +3,7 @@ package com.example.ApachePOIExcelExample.controller;
 import com.example.ApachePOIExcelExample.exception.ReportException;
 import com.example.ApachePOIExcelExample.model.ReportRequest;
 import com.example.ApachePOIExcelExample.model.ReportSheetDto;
+import com.example.ApachePOIExcelExample.service.ArrayColumnExampleService;
 import com.example.ApachePOIExcelExample.service.ReportService;
 import com.example.ApachePOIExcelExample.service.SomeEntityService;
 import io.swagger.annotations.Api;
@@ -28,6 +29,7 @@ public class ReportController {
 
     private final ReportService reportService;
     private final SomeEntityService someEntityService;
+    private final ArrayColumnExampleService arrayColumnExampleService;
 
     @GetMapping("/get_report")
     public ModelAndView getReportPage() {
@@ -62,6 +64,12 @@ public class ReportController {
     public String deleteRow(@PathVariable("id") Long id) {
         someEntityService.deleteById(id);
         return "redirect:/get_report";
+    }
+
+    @GetMapping("/array_column_example/print")
+    public ResponseEntity<Void> printAllEntities() {
+        arrayColumnExampleService.addOneAndPrintAllEntities();
+        return ResponseEntity.ok().build();
     }
 
 }

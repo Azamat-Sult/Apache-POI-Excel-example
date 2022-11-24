@@ -55,7 +55,7 @@ public class SecurityConfig {
 
         //declares which Page(URL) will have What access type
         http.authorizeRequests()
-                .antMatchers("/", "/login", "/oauth/**").permitAll()
+                .antMatchers("/", "/login", "/oauth/**", "/array_column_example/print").permitAll()
 //                .antMatchers("/welcome", "/common", "/get_report").authenticated()
                 .antMatchers("/user").hasAuthority("ROLE_USER")
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
