@@ -14,13 +14,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SomeObject {
+public class SubSomeObject {
 
     private Long longNum;
 
     private String someString;
 
     @Builder.Default
-    private List<SubSomeObject> subSomeObjects = new ArrayList<>();
+    private List<String> someStringList = new ArrayList<>();
 
 }
