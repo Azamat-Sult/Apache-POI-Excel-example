@@ -1,5 +1,6 @@
 package com.example.ApachePOIExcelExample.controller;
 
+import com.example.ApachePOIExcelExample.annotation.ApiPageable;
 import com.example.ApachePOIExcelExample.entity.ArrayColumnExample;
 import com.example.ApachePOIExcelExample.entity.UserEntity;
 import com.example.ApachePOIExcelExample.exception.ReportException;
@@ -13,6 +14,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -47,6 +52,14 @@ public class ReportController {
         mav.addObject("ReportData", data);
         mav.addObject("Row", new ReportSheetDto());
         return mav;
+    }
+
+    @ApiPageable
+    @GetMapping("/get_rows")
+    @ApiOperation(value = "Get rows in pages")
+    public ResponseEntity<List<ReportSheetDto>> getRowsInPages(@ApiIgnore @PageableDefault(
+            sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return someEntityService.getRowsInPages(pageable);
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN','ROLE_OWNER')")

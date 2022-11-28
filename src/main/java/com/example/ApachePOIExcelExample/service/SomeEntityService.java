@@ -4,8 +4,13 @@ import com.example.ApachePOIExcelExample.entity.SomeEntity;
 import com.example.ApachePOIExcelExample.model.ReportSheetDto;
 import com.example.ApachePOIExcelExample.model.SomeDataLoadDto;
 import com.example.ApachePOIExcelExample.repository.SomeEntityRepository;
+import com.example.ApachePOIExcelExample.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,8 +43,25 @@ public class SomeEntityService {
                 .toList();
     }
 
+    public Page<SomeEntity> findAll(Pageable pageable) {
+        return someEntityRepository.findAll(pageable);
+    }
+
     public void deleteById(Long id) {
         someEntityRepository.deleteById(id);
+    }
+
+    public void create(SomeDataLoadDto dto) {
+        someEntityRepository.save(dto.toEntity());
+    }
+
+    public ResponseEntity<List<ReportSheetDto>> getRowsInPages(Pageable pageable) {
+        Page<SomeEntity> page = findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page);
+        var result = page.getContent().stream()
+                .map(SomeEntity::toReportSheetDto)
+                .toList();
+        return ResponseEntity.ok().headers(headers).body(result);
     }
 
 }

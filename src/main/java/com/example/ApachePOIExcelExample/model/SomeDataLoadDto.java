@@ -7,6 +7,7 @@ import com.example.ApachePOIExcelExample.entity.SomeEntity;
 import com.example.ApachePOIExcelExample.enums.Type1;
 import lombok.*;
 
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 @Data
@@ -18,14 +19,17 @@ public class SomeDataLoadDto {
 
     private Long id;
 
+    @Size(max = 32)
     @ValidString
     @ReportHeader("Строка 1")
     private String string1;
 
+    @Size(max = 32)
     @ValidString
     @ReportHeader("Строка 2")
     private String string2;
 
+    @Size(max = 32)
     @ValidString
     @ReportHeader("Строка 3")
     private String string3;
