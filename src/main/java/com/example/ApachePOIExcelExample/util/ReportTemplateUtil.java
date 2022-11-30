@@ -4,6 +4,11 @@ import com.example.ApachePOIExcelExample.annotation.ReportFieldControl;
 import com.example.ApachePOIExcelExample.annotation.ReportFieldControl.AccessType;
 import com.example.ApachePOIExcelExample.annotation.ReportHeader;
 import com.example.ApachePOIExcelExample.model.ReportFieldsDto;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Field;
@@ -61,6 +66,16 @@ public class ReportTemplateUtil {
             return allFields.filter(field -> selectedFields.contains(field.getName()))
                     .toArray(Field[]::new);
         }
+    }
+
+    public static ResponseEntity<Resource> response(InputStreamResource streamResource, String fileName,
+                                                    String contentType) {
+        var contentDisposition = "attachment; filename=" + fileName;
+        var headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
+        headers.set(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
+        headers.set(HttpHeaders.CONTENT_TYPE, contentType);
+        return new ResponseEntity<>(streamResource, headers, HttpStatus.OK);
     }
 
 }

@@ -10,6 +10,7 @@ import com.example.ApachePOIExcelExample.service.ArrayColumnExampleService;
 import com.example.ApachePOIExcelExample.service.ReportService;
 import com.example.ApachePOIExcelExample.service.SomeEntityService;
 import com.example.ApachePOIExcelExample.service.UserService;
+import com.example.ApachePOIExcelExample.util.ReportTemplateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -66,13 +67,9 @@ public class ReportController {
     @PostMapping("/report")
     @ApiOperation(value = "download xlsx report file")
     public ResponseEntity<Resource> getReport(@ModelAttribute ReportRequest request) throws ReportException {
-        var contentDisposition = "attachment; filename=report.xlsx";
-        var headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
-        headers.set(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION);
-        headers.set(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel; charset=utf-8");
+        var contentType = "application/vnd.ms-excel; charset=utf-8";
         var resourceStream = reportService.buildReport(request.getFields());
-        return new ResponseEntity<>(resourceStream, headers, HttpStatus.OK);
+        return ReportTemplateUtil.response(resourceStream, "report.xlsx", contentType);
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")

@@ -34,14 +34,21 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ReportException.class)
-    public final ResponseEntity<Object> reportError(Exception e, WebRequest request) {
+    public final ResponseEntity<Object> reportError(ReportException e, WebRequest request) {
         log.error(shortenedStackTrace(e));
         var apiException = new ApiError(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiException);
     }
 
     @ExceptionHandler(ParsingException.class)
-    public final ResponseEntity<Object> parsingError(Exception e, WebRequest request) {
+    public final ResponseEntity<Object> parsingError(ParsingException e, WebRequest request) {
+        log.error(shortenedStackTrace(e));
+        var apiException = new ApiError(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiException);
+    }
+
+    @ExceptionHandler(SchedulerException.class)
+    public final ResponseEntity<Object> schedulerError(SchedulerException e, WebRequest request) {
         log.error(shortenedStackTrace(e));
         var apiException = new ApiError(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiException);

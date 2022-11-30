@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -30,6 +31,12 @@ public class ExcelReport<E> {
     private CellStyle labelStyle;
     private CellStyle numberStyle;
     private CellStyle dateStyle;
+
+    public ExcelReport(List<E> reportData, Class<E> template) {
+        this.reportData = reportData;
+        this.template = template;
+        this.fields = ReportTemplateUtil.filterSelectedFields(template, Collections.emptyList());
+    }
 
     public ExcelReport(List<E> reportData, Class<E> template, List<String> fields) {
         this.reportData = reportData;

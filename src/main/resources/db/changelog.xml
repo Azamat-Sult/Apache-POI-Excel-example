@@ -266,4 +266,85 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         </createTable>
     </changeSet>
 
+    <changeSet id="13" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="scheduled_job"/>
+            </not>
+        </preConditions>
+        <createTable tableName="scheduled_job">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="job_code" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="last_start_time" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="last_finish_time" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="last_success_start_time" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="job_result" type="VARCHAR(30)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="job_status" type="VARCHAR(30)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="job_schedule" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_active" type="BOOLEAN">
+                <constraints nullable="true"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="parameters" type="JSONB"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="14" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM scheduled_job
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            insert into scheduled_job (job_code, job_schedule, is_active, title, parameters)
+            values ('consolePrinter', '0 0 0 * * *', false, 'Print text to console TIMES times. TIMES - parameter', '{"times" : 2}')
+        </sql>
+    </changeSet>
+
+    <changeSet id="15" author="azamat_s">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="scheduled_job_log"/>
+            </not>
+        </preConditions>
+        <createTable tableName="scheduled_job_log">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="job_code" type="VARCHAR(50)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="log_code" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="start_time" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="finish_time" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+            <column name="job_result" type="VARCHAR(30)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
