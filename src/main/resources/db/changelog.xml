@@ -347,4 +347,30 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         </createTable>
     </changeSet>
 
+    <changeSet id="16" author="azamat_s">
+        <sql>
+            -- 1. rename the enum type you want to change
+            alter type type_2_type rename to _type_2_type;
+            -- 2. create new type
+            create type type_2_type as enum ('TYPE_2_1', 'TYPE_2_2', 'TYPE_2_3', 'NEW_ELEMENT');
+            -- 3. rename column(s) which uses our enum type
+            alter table array_column_example rename column type_2 to _type_2;
+            -- 4. add new column of new type
+            alter table array_column_example add type_2 type_2_type[];
+            -- 5. copy values to the column
+            update array_column_example set type_2 = _type_2::text::type_2_type[];
+            -- 6. remove old column and type
+            alter table array_column_example drop _type_2;
+            drop type _type_2_type;
+        </sql>
+    </changeSet>
+
+    <changeSet id="17" author="azamat_s">
+        <loadData tableName="some_entities"
+                  file="classpath:/db/data.csv"
+                  separator=";"
+                  encoding="utf-8"
+        />
+    </changeSet>
+
 </databaseChangeLog>
